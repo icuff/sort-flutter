@@ -26,29 +26,33 @@ class SortPage extends StatefulWidget {
 class _SortPageState extends State<SortPage> {
   bool _btnVisible;
   bool _statusVisible;
-  int _size = 10000;
+  int _size = 100000;
   int _maxValue = 1000000;
   List _array = [];
-  bool _sorted;
+  String _durationTxt;
 
   @override
   void initState() {
     super.initState();
     _btnVisible = true;
     _statusVisible = false;
-    _sorted = false;
     _array = initiateArray();
   }
 
   List initiateArray() {
+    DateTime begin = DateTime.now();
     List _tempArray = [];
     for(int i = 0; i < _size; i++) {
       _tempArray.add(new Random().nextInt(_maxValue));
     }
+    DateTime end = DateTime.now();
+    String duration = end.difference(begin).inMilliseconds.toString();
+    _durationTxt = 'Finished initiating array in ' + duration + 'ms';
     return _tempArray;
   }
 
   void sort() {
+    DateTime begin = DateTime.now();
     setState(() {
       _btnVisible = false;
       _statusVisible = true;
@@ -67,9 +71,12 @@ class _SortPageState extends State<SortPage> {
       }
     }
 
+    DateTime end = DateTime.now();
+    String duration = end.difference(begin).inMilliseconds.toString();
     setState(() {
       _statusVisible = false;
       _array = _items;
+      _durationTxt = 'Finished sorting array in ' + duration + 'ms';
     });
   }
 
@@ -90,6 +97,7 @@ class _SortPageState extends State<SortPage> {
                 child: Text('Sort'),
               ),
             ),
+            Text(_durationTxt),
             Visibility(
               visible: _statusVisible,
               child: RaisedButton(
@@ -97,7 +105,7 @@ class _SortPageState extends State<SortPage> {
                 child: Text('Processing...'),
               ),
             ),
-            Text(_array.toString())
+            Text(_array.join(', '))
           ],
         ),
       ),
